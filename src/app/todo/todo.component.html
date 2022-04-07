@@ -1,0 +1,60 @@
+<main class="todo-container">
+  <section fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign="start center">
+    <form (ngSubmit)="addTodo()">
+      <div fxLayout="row" fxLayoutGap="10px" fxLayoutAlign="start center">
+        <mat-form-field appearance="fill">
+          <mat-label>Todo Title</mat-label>
+          <input [formControl]="searchStr" type="text" autocomplete="off" matInput required>
+        </mat-form-field>
+
+        <button type="submit" color="primary" mat-raised-button>ADD TODO</button>
+      </div>
+    </form>
+
+    <div>
+      <button mat-icon-button [mat-menu-trigger-for]="filterMenu">
+        <mat-icon>filter_alt</mat-icon>
+        {{todoCategory | uppercase}}</button>
+      <mat-menu #filterMenu="matMenu">
+        <ng-template matMenuContent>
+          <button (click)="updateCategory('all')" mat-menu-item>All</button>
+          <button (click)="updateCategory('active')" mat-menu-item>Active</button>
+          <button (click)="updateCategory('completed')" mat-menu-item>Completed</button>
+        </ng-template>
+      </mat-menu>
+    </div>
+  </section>
+
+  <br />
+  <section>
+    <mat-card class="todo-list-card">
+      <mat-card-header>
+        <mat-card-title>TODO LISTS</mat-card-title>
+      </mat-card-header>
+
+      <mat-card-content>
+        <div fxLayout="row">
+          <mat-list>
+            <mat-option *ngFor="let todo of filteredTodos;trackBy: todoTrackBy" fxLayout="row">
+              <div fxLayout="row" fxLayoutGap="1rem">
+                <mat-checkbox color="primary"
+                              [matTooltip]="todo.isCompleted? 'UnMark as inprogress': 'Mark As completed'"
+                              matTooltipPosition="right" [(ngModel)]="todo.isCompleted"
+                              (ngModelChange)="updateTodo(todo)"></mat-checkbox>
+                <mat-form-field [hintLabel]="'Created At '+ (todo.createdAt| date: 'MM-dd-yyyy') ?? '' ">
+                  <input [disabled]="todo.isCompleted" [(ngModel)]="todo.title" type="text" (blur)="updateTodo(todo)"
+                         matInput
+                         autocomplete="off"/>
+                </mat-form-field>
+                <button (click)="deleteTodo(todo)" color="warn" mat-icon-button>
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </div>
+            </mat-option>
+          </mat-list>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+  </section>
+</main>
